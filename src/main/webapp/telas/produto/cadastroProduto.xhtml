@@ -1,0 +1,169 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template/layout.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <ui:define name="titulo">Estoque</ui:define>
+
+    <ui:define name="corpo">
+        <f:metadata>
+            <f:viewAction action="#{cadastroProdutoController.validar()}" />
+        </f:metadata>
+
+        <h:form>
+            <p:messages autoUpdate="true" closable="true"/>
+            
+            <h:outputText value="Cadastro de Produto" styleClass="titulo"/>
+            
+            <p:toolbar style="margin-top: 20px">
+                <f:facet name="left">
+                    <p:commandButton value="Novo" icon="fa fa-file" action="#{cadastroProdutoController.novo()}" process="@this" update="@form"/> <!--outcome="/produtos/CadastroProduto"-->
+                    <p:commandButton value="Salvar" id="btSalvar" icon="fa fa-save" action="#{cadastroProdutoController.salvar()}" update="@form"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton value="Pesquisar" icon="fa fa-search" action="#{cadastroProdutoController.finalizar()}" process="@this"/>
+                </f:facet>
+            </p:toolbar>
+            
+            
+            
+            <p:panel>
+                <h:panelGrid columns="5">
+                    <h:panelGrid>
+                        <p:outputLabel value="Código" for="codigo"/>
+                        <p:inputText id="codigo" size="5" disabled="true" value="#{cadastroProdutoController.produto.id}"/>
+                    </h:panelGrid>
+                    <h:panelGrid>
+                        <p:outputLabel value="SKU" for="sku"/>
+                        <p:inputText id="sku" size="8" maxlength="10" value="#{cadastroProdutoController.produto.sku}" converter="#{upperCaseConverter}"/>
+                    </h:panelGrid>
+                    <h:panelGrid>
+                        <p:outputLabel value="Descrição do Produto" for="descricao"/>
+                        <p:inputText id="descricao" size="68" maxlength="50" value="#{cadastroProdutoController.produto.descricao}" required="true" converter="#{upperCaseConverter}"/>
+                    </h:panelGrid>
+
+
+                </h:panelGrid>
+
+                <h:panelGrid columns="4">
+                    <h:panelGrid>
+                        <h:panelGroup>
+                            <p:outputLabel value="Categoria" for="categoria"/>
+                            <p:outputLabel for="newcat" value="Novo" style="visibility: hidden"/>
+                        </h:panelGroup>
+                        <h:panelGroup>
+                            <h:panelGrid columns="2">
+                                <p:selectOneMenu id="categoria" style="width: 100px" value="#{cadastroProdutoController.produto.categoria}" required="true"
+                                                 converter="#{categoriaConverter}">
+                                    <f:selectItem itemLabel="Selecione"/>
+                                    <f:selectItems value="#{categoriaController.categorias}" var="categoria"
+                                                   itemValue="#{categoria}" itemLabel="#{categoria.nome}"/>
+                                    <p:ajax update="subcategoria" process="@this"/>
+                                </p:selectOneMenu>
+                                <p:commandButton id="newcat" icon="fa fa-plus" process="@this" disabled="true" update="categoria" action="#{categoriaController.abrirDialogo()}">
+                                    <p:ajax event="dialogReturn" listener="#{cadastroProdutoController.categoriaSelecionada}"  process="@this" update="@form"/>
+                                </p:commandButton>
+                            </h:panelGrid>
+                        </h:panelGroup>
+                    </h:panelGrid>
+                    
+                    <h:panelGrid>
+                        <p:outputLabel value="Subcategoria" for="subcategoria" />
+                        <p:selectOneMenu id="subcategoria" style="width: 100px" value="#{cadastroProdutoController.produto.subCategoria}"
+                                         converter="#{subcategoriaConverter}">
+                                    <f:selectItem itemLabel="Selecione"/>
+                                    <f:selectItems value="#{cadastroProdutoController.produto.categoria.subCategorias}" var="subcategoria"
+                                                   itemValue="#{subcategoria}" itemLabel="#{subcategoria.nome}"/>
+                                </p:selectOneMenu>
+                    </h:panelGrid>
+                    
+
+                    <h:panelGrid>
+                        <h:panelGroup>
+                            <p:outputLabel value="Marca/Modelo" for="marca"/>
+                            <p:outputLabel for="newmar" value="Novo" style="visibility: hidden"/>
+                        </h:panelGroup>
+                        <h:panelGroup>
+                            <h:panelGrid columns="2">
+                                <p:selectOneMenu id="marca" style="width: 100px" value="#{cadastroProdutoController.produto.marca}" required="true"
+                                                 converter="#{marcaConverter}">
+                                    <f:selectItem itemLabel="Selecione"/>
+                                    <f:selectItems value="#{marcaController.marcas}" var="marca"
+                                                   itemValue="#{marca}" itemLabel="#{marca.descricao}"/>
+                                </p:selectOneMenu>
+                                <p:commandButton id="newmar" icon="fa fa-plus" disabled="true" process="@this" update="marca">
+                                    <p:ajax event="dialogReturn" process="@this" update="marca"/>
+                                </p:commandButton>
+                            </h:panelGrid>
+                        </h:panelGroup>
+                    </h:panelGrid>
+                    
+                    <h:panelGrid>
+                        <p:outputLabel value="Unidade" for="unidade" />
+                        <p:selectOneMenu id="unidade" style="width: 100px" value="#{cadastroProdutoController.produto.unidade}" required="true"
+                                         converter="#{unidadeConverter}">
+                                    <f:selectItem itemLabel="Selecione"/>
+                                    <f:selectItems value="#{unidadecontroller.unidades}" var="unidade"
+                                                   itemValue="#{unidade}" itemLabel="#{unidade.codigo}"/>
+                                </p:selectOneMenu>
+                    </h:panelGrid>
+                </h:panelGrid>
+
+
+                <h:panelGrid columns="6">
+                    <h:panelGrid>
+                        <p:outputLabel value="Estoque Atual" for="atual"/>
+                        <p:spinner id="atual" size="8" min="0" value="#{cadastroProdutoController.produto.estoqueAtual}" required="true"/>
+                    </h:panelGrid>
+
+                    <h:panelGrid>
+                        <p:outputLabel value="Estoque Máximo" for="maximo"/>
+                        <p:spinner id="maximo" size="8" min="0" value="#{cadastroProdutoController.produto.estoqueMaximo}" required="true"/>
+                    </h:panelGrid>
+
+                    <h:panelGrid>
+                        <p:outputLabel value="Estoque Mínimo" for="minimo"/>
+                        <p:spinner id="minimo" size="8" min="0" value="#{cadastroProdutoController.produto.estoqueMinimo}" required="true"/>
+                    </h:panelGrid>
+
+                    <h:panelGrid>
+                        <p:outputLabel value="Ativo" for="ativo"/>
+                        <p:inputSwitch id="ativo" value="#{cadastroProdutoController.produto.ativo}" offLabel="não" onLabel="sim"/>
+                    </h:panelGrid>
+
+                    <h:panelGrid>
+                        <p:outputLabel value="Valor de Custo" for="custo"/>
+                        <p:inputNumber id="custo" size="15" symbol="R$ " decimalSeparator=","
+                                       value="#{cadastroProdutoController.produto.valorCusto}"
+                                       thousandSeparator="." decimalPlaces="2" required="true"
+                                       requiredMessage="Por favor, informe o valor de venda">
+                        </p:inputNumber>
+                    </h:panelGrid>
+
+                    <h:panelGrid style="font-weight: bold; font-size: 1.1em; color: darkgreen">
+                        <p:outputLabel value="Valor de Venda" for="venda"/>
+                        <p:inputNumber id="venda" size="15" symbol="R$ " decimalSeparator=","
+                                       value="#{cadastroProdutoController.produto.valorVenda}"
+                                       thousandSeparator="." decimalPlaces="2" required="true"
+                                       requiredMessage="Por favor, informe o valor de venda">
+                        </p:inputNumber>
+                    </h:panelGrid>
+                </h:panelGrid>
+
+                <h:panelGrid style="clear: left; float: left; text-align: center; margin-top: 10px"
+                             rendered="#{cadastroProdutoController.produto.possuiCodBarras}">
+                    <p:outputLabel value="Código de Barras" for="barcode"/>
+                    <p:barcode id="barcode" value="#{cadastroProdutoController.produto.codigoDeBarras}" type="code39"/>
+                </h:panelGrid>
+
+            </p:panel>
+
+
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/WEB-INF/template/layout.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="titulo">Estoque</ui:define>
+
+    <ui:define name="corpo">
+        <p:messages autoUpdate="true"/>
+        <h:form id="formProdutos">
+            <p:toolbar>
+                <p:toolbarGroup align="right">
+                    <p:commandButton value="Finalizar Inventário"  process="@this" update="itensTable"/>
+                </p:toolbarGroup>
+                <p:toolbarGroup align="left">
+                    <p:commandButton value="Pesquisar" action="#{inventarioController.pesquisar()}" update="itensTable"/>
+                </p:toolbarGroup>
+            </p:toolbar>
+
+            <h:panelGrid id="painel" columns="1" style="margin-top: 5px">
+
+                <h:outputText value="Seleção de produtos (itens duplicados serão ignorados)" style="font-weight: bold; color: brown"/>
+                <p:selectCheckboxMenu id="produtos" value="#{inventarioController.produtosSelecionados}" label="Produtos" converter="#{produtoConverter}" 
+                                      filter="true" filterMatchMode="contains" panelStyle="width:250px">
+                    <f:selectItems value="#{inventarioController.produtosInventario}" var="produto" itemLabel="#{produto.id} #{produto.descricao} #{produto.categoria.nome}" itemValue="#{produto}" />
+                </p:selectCheckboxMenu>
+
+                <p:commandButton value="ok" action="#{inventarioController.adicionar()}" update="painel itensTable"/>
+            </h:panelGrid>
+
+
+            <p:dataTable id="itensTable" value="#{inventarioController.inventario.itens}" paginatorAlwaysVisible="false" paginatorPosition="bottom"
+                         var="item" style="margin-top: 20px;" emptyMessage="Não há registros." paginator="true" rows="30"
+                         editable="true" editMode="cell">
+
+                <p:ajax event="cellEdit" update="itensTable" />
+                <p:ajax event="cellEditCancel" update="itensTable" />
+
+                <f:facet name="header">
+                    <div align="right">
+                        <p:outputLabel value="Responsável: " style="font-weight: bold"/>
+                        <h:outputText id="responsavel" value="#{loginController.usuario.nome}" style="font-weight: bold"/>
+                    </div>
+                </f:facet>
+
+                <p:column headerText="Código" style="text-align: center; width: 50px">
+                    <h:outputText value="#{item.produto.id}"/>
+                </p:column>
+
+                <p:column headerText="SKU" style="text-align: center; width: 50px">
+                    <h:outputText value="#{item.produto.sku}"/>
+                </p:column>
+
+                <p:column headerText="Produto">
+                    <h:outputText value="#{item.produto.descricao}"/>
+                </p:column>
+
+                <p:column headerText="Estoque Atual" style="text-align: right; width: 100px">
+                    <h:outputText value="#{item.quantidadeAtual}"/>
+                </p:column>
+                <p:column headerText="Qtd Contada" style="text-align: right; width: 100px">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputText value="#{item.quantidadeAtual}"/>
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:spinner value="#{item.quantidadeContada}" min="0"/>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

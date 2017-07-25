@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Pagamento</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <h:outputStylesheet library="css" name="sistema.css"/>
+        <h:outputScript library="scripts" name="calendario.js"/>
+        <!--<h:outputScript library="scripts" name="uppercase.js"/>-->
+    </h:head>
+    <h:body>
+        <h:form id="form">
+            <h:panelGrid columns="2" style="width: 100%" columnClasses="columLeft, columRight">
+                <h:outputText value="Total a Pagar" styleClass="pagamento"/>
+                <h:outputText value="#{recebePagamentoController.conta.valor}" styleClass="pagamento">
+                    <f:convertNumber type="currency"/>
+                </h:outputText>
+
+                <h:outputText value="Desconto" styleClass="pagamento" style="color: red"/>
+                <h:outputText value="#{recebePagamentoController.conta.desconto}" styleClass="pagamento" style="color: red">
+                    <f:convertNumber type="currency"/>
+                </h:outputText>
+
+                <h:panelGroup>
+                    <h:panelGrid columns="2">
+                        <p:graphicImage library="imagens" name="dinheiro.png"/>
+                        <h:outputText value="Dinheiro"/>
+                    </h:panelGrid>
+                </h:panelGroup>
+                <p:inputNumber id="dinheiro" size="15" symbol="R$ " decimalSeparator=","
+                               value="#{recebePagamentoController.conta.dinheiro}" 
+                               thousandSeparator="." decimalPlaces="2" required="true">
+                    <p:ajax update="troco labelTroco finaliza"/>
+                </p:inputNumber>
+
+                <h:panelGroup>
+                    <h:panelGrid columns="2">
+                        <p:graphicImage library="imagens" name="maquininha.png"/>
+                        <h:outputText value="Débito"/>
+                    </h:panelGrid>
+                </h:panelGroup>
+                <p:inputNumber id="debito" size="15" symbol="R$ " decimalSeparator=","
+                               value="#{recebePagamentoController.conta.debito}"
+                               thousandSeparator="." decimalPlaces="2" required="true">
+                    <p:ajax update="troco labelTroco finaliza"/>
+                </p:inputNumber>
+
+                <h:panelGroup>
+                    <h:panelGrid columns="2">
+                        <p:graphicImage library="imagens" name="card.png" />
+                        <h:outputText value="Crédito"/>
+                    </h:panelGrid>
+                </h:panelGroup>
+                <p:inputNumber id="credito" size="15" symbol="R$ " decimalSeparator=","
+                               value="#{recebePagamentoController.conta.credito}"
+                               thousandSeparator="." decimalPlaces="2" required="true">
+                    <p:ajax update="troco labelTroco finaliza"/>
+                </p:inputNumber>
+
+                <h:panelGroup>
+                    <h:panelGrid columns="2">
+                        <p:graphicImage library="imagens" name="cheque.png"/>
+                        <h:outputText value="Cheque"/>
+                    </h:panelGrid>
+                </h:panelGroup>
+                <p:inputNumber id="cheque" size="15" symbol="R$ " decimalSeparator=","
+                               value="#{recebePagamentoController.conta.cheque}"
+                               thousandSeparator="." decimalPlaces="2" required="true">
+                    <p:ajax update="troco labelTroco finaliza"/>
+                </p:inputNumber>
+                
+                <h:outputText id="labelTroco" value="#{recebePagamentoController.conta.statusTroco}" styleClass="pagamento"/>
+                <h:outputText id="troco" value="#{recebePagamentoController.conta.trocoAbsoluto}" styleClass="pagamento"/>
+                
+            </h:panelGrid>
+            <center>
+                <p:commandButton id="finaliza" value="Finalizar" style="width: 99%"
+                                 action="#{recebePagamentoController.fecharVenda()}"
+                                 disabled="#{recebePagamentoController.aindaFalta}" process="@this">
+                    <p:confirm header="Confirmação" message="Confirma este pagamento?" icon="ui-icon-alert" />
+                </p:commandButton>
+            </center>
+            
+            
+
+            <p:confirmDialog global="true">  
+                <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+            </p:confirmDialog>
+        </h:form>
+    </h:body>
+</html>
+

@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template/layout.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <ui:define name="titulo">Usuários</ui:define>
+
+    <ui:define name="corpo">
+
+        <p:messages autoUpdate="true" closable="true"/>
+        <h:form id="form">
+            
+            <h:outputText value="Cadastro de Usuários" styleClass="titulo" />
+            
+            <p:panel style="margin-top: 20px">
+
+                <h:panelGrid columns="2" id="painel">
+                    <p:outputLabel for="nome" value="Nome" />
+                    <p:inputText id="nome" value="#{usuarioController.usuario.nome}" required="true" converter="#{upperCaseConverter}"/>
+
+                    <p:outputLabel for="login" value="Login" />
+                    <p:inputText style="text-transform: lowercase" id="login" value="#{usuarioController.usuario.login}" required="true"/>
+
+                    <p:outputLabel for="senha" value="Senha"/>
+                    <p:password id="senha" value="#{usuarioController.usuario.senha}" required="true" />
+
+                    <!--<p:outputLabel for="confirmacao" value="Confirme a Senha"/>-->
+                    <!--<p:password id="confirmacao" value="" required="true" feedback="true"/>-->
+                </h:panelGrid>
+
+                <h:panelGrid columns="1">
+                    <p:outputLabel value="Permissão"/>
+                    <p:selectCheckboxMenu id="grupo" value="#{usuarioController.usuario.grupos}" label="Grupos"
+                                          required="true" requiredMessage="Escolha um grupo" converter="#{grupoConverter}"
+                                          panelStyle="width:250px">
+                        <f:selectItems value="#{grupoController.grupos}" var="grupo"
+                                       itemValue="#{grupo}" itemLabel="#{grupo.nome}"/>
+                    </p:selectCheckboxMenu>
+                </h:panelGrid>
+
+                <p:commandButton value="Salvar" icon="fa fa-save" action="#{usuarioController.salvar()}" update="painel usuarioTable" style="margin-top: 10px"/>
+                <p:commandButton value="Novo" icon="fa fa-file" action="#{usuarioController.novo()}" process="@this" update="painel" style="margin-top: 10px"/>
+            </p:panel>
+
+            <p:dataTable id="usuarioTable" value="#{usuarioController.usuarios}" paginatorAlwaysVisible="false" paginatorPosition="bottom"
+                         var="usuario" style="margin-top: 20px;" emptyMessage="Não há registros." paginator="true" rows="5">
+                <p:column headerText="Código" style="text-align: center; width: 100px">
+                    <h:outputText value="#{usuario.id}"/>
+                </p:column>
+
+                <p:column headerText="Nome">
+                    <h:outputText value="#{usuario.nome}"/>
+                </p:column>
+
+                <p:column style="width: 100px; text-align: center">
+                    <p:commandButton icon="fa fa-pencil" title="Editar" process="@this" update=":form:painel">
+                        <f:setPropertyActionListener target="#{usuarioController.usuario}" value="#{usuario}"/>
+                    </p:commandButton>
+                    <p:commandButton icon="fa fa-trash" title="Excluir" update="usuarioTable :form:painel" process="@this" action="#{usuarioController.remover()}">
+                        <p:confirm message="Tem certeza que deseja remover #{usuario.nome}?" icon="ui-icon-alert"/>
+                        <f:setPropertyActionListener target="#{usuarioController.usuario}" value="#{usuario}"/>
+                    </p:commandButton>                
+                </p:column>
+            </p:dataTable>
+
+            <p:confirmDialog global="true">  
+                <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+            </p:confirmDialog>
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>

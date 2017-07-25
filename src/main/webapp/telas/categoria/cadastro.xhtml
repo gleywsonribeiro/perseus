@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template/layout.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="titulo">Estoque</ui:define>
+
+    <ui:define name="corpo">
+        <h:form id="form">
+            <p:growl autoUpdate="true"/>
+            
+            <h:outputText value="Cadastro de Categorias e Subcategorias" styleClass="titulo" />
+            
+            <p:panel style="margin-top: 20px">
+                <h:panelGrid columns="3" id="painel">
+                    <p:outputLabel value="Categoria" for="categoria"/>
+                    <p:inputText id="categoria" value="#{categoriaController.categoria.nome}" converter="#{upperCaseConverter}" required="true" requiredMessage="nome da categoria é obrigatório"/>
+                    <p:commandButton value="Salvar" icon="fa fa-save" action="#{categoriaController.salvar()}" process="@form" update="@form"/>
+                </h:panelGrid>
+
+                <p:fieldset id="fildSubCategorias" legend="Subcategorias" style="width: 300px; margin-top: 5px" toggleable="true">
+                    <h:panelGrid columns="2">
+                        <h:panelGroup>
+                            <p:watermark value="subcategoria" for="subcategoria"/>
+                            <p:inputText id="subcategoria" value="#{categoriaController.subCategoria.nome}" converter="#{upperCaseConverter}">
+                                <p:ajax event="keyup" delay="1000" update="btInsertSub"/>
+                            </p:inputText>
+                        </h:panelGroup>
+                        <p:commandButton id="btInsertSub" icon="fa fa-plus" action="#{categoriaController.addSubCategoria()}"
+                                         disabled="#{categoriaController.subCategoria.nome eq null}" process="@this subcategoria" update="subcategoria tableSubCategoria @this"/>
+                    </h:panelGrid>
+
+                    <p:dataTable id="tableSubCategoria" value="#{categoriaController.categoria.subCategorias}" var="subcategoria" paginatorAlwaysVisible="false" paginatorPosition="bottom"
+                                 emptyMessage="Não há subcategorias vinculadas" paginator="true" rows="5">
+                        <p:column headerText="subcategoria">
+                            <h:outputText value="#{subcategoria.nome}"/>
+                        </p:column>
+                        <p:column style="width: 30px; text-align: center">
+                            <p:tooltip for="btremove" value="Remover Subcategoria"/>
+                            <p:commandButton id="btremove" icon="fa fa-trash-o" update=":form:fildSubCategorias" process="@this" action="#{categoriaController.removeSubCategoria()}">
+                                <f:setPropertyActionListener target="#{categoriaController.subCategoria}" value="#{subcategoria}"/>
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                </p:fieldset>
+
+            </p:panel>
+
+
+            <p:dataTable id="categoriaTable" value="#{categoriaController.categorias}" paginatorAlwaysVisible="false" paginatorPosition="bottom"
+                         var="categoria" style="margin-top: 20px;" emptyMessage="Não há registros." paginator="true" rows="5">
+                <p:column headerText="Código" style="text-align: center; width: 100px">
+                    <h:outputText value="#{categoria.id}"/>
+                </p:column>
+
+                <p:column headerText="Categoria">
+                    <h:outputText value="#{categoria.nome}"/>
+                </p:column>
+
+                <p:column style="width: 100px; text-align: center">
+                    <p:commandButton icon="fa fa-pencil" title="Editar" update=":form:painel :form:fildSubCategorias" process="@this">
+                        <f:setPropertyActionListener target="#{categoriaController.categoria}" value="#{categoria}"/>
+                    </p:commandButton>
+                    <p:commandButton icon="fa fa-trash" title="Excluir" action="#{categoriaController.remover()}" process="@this" update="@form">
+                        <p:confirm header="Exclusão da Sede" message="Tem certeza que deseja excluir categoria #{categoria.nome}?" icon="ui-icon-alert"/>
+                        <f:setPropertyActionListener target="#{categoriaController.categoria}" value="#{categoria}"/>
+                    </p:commandButton>                
+                </p:column>
+            </p:dataTable>
+
+            <p:confirmDialog global="true">  
+                <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+            </p:confirmDialog>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

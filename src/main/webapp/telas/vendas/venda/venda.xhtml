@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../../WEB-INF/template/layout.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <ui:define name="titulo">Venda</ui:define>
+
+    <ui:define name="corpo">
+        <h:form id="formPedido">
+            <p:messages autoUpdate="true" closable="true"/>
+            <h:outputText value="Venda Direta" styleClass="titulo"/>
+            <p:toolbar style="margin-top: 20px">
+                <p:toolbarGroup>
+                    <!--<p:commandButton value="Novo" icon="fa fa-file" />--> 
+                    <p:commandButton value="Salvar" icon="fa fa-save" id="botaoSalvar" process="@this painel" disabled="true" action="#{vendaController.salvar()}" update="@form"/>
+                </p:toolbarGroup>
+                <p:toolbarGroup align="right">
+                    <p:commandButton id="emitir" icon="fa fa-check" value="Emitir" process="@this painel" update="@form" action="#{vendaController.emitir()}"/>
+                    <p:separator/>
+                    <!--<p:commandButton value="Pesquisar" process="@this" action="pesquisaPedido?faces-redirect=true" icon="fa fa-search"/>-->
+                </p:toolbarGroup>
+            </p:toolbar>
+
+            <p:defaultCommand target="botaoSalvar"/>
+
+            <p:panel>
+
+                <ui:include src="/WEB-INF/include/venda/capa.xhtml" />
+
+                <p:tabView style="margin-top: 20px" id="tabview">
+                    <p:tab title="Itens">
+                        <ui:include src="/WEB-INF/include/venda/itens.xhtml"/>
+                        <!--                    <ui:include src="../WEB-INF/template/pedido/itensPedido.xhtml" />-->
+                    </p:tab>
+                </p:tabView>
+            </p:panel>
+
+        </h:form>
+    </ui:define>
+
+</ui:composition>

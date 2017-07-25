@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../../WEB-INF/template/layout.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <!--    <ui:define name="titulo">Contas a Pagar</ui:define>-->
+
+    <ui:define name="corpo">
+        <h:form>
+            <p:messages autoUpdate="true" closable="true"/>
+            <h:outputText value="Lançamento de Contas a Pagar" styleClass="titulo" />
+
+            <p:toolbar style="margin-top: 20px">
+                <f:facet name="left">
+                    <p:commandButton value="Novo" icon="fa fa-file"  process="@this" update="@form" action="#{contaPagarController.novo()}"/> <!--outcome="/produtos/CadastroProduto"-->
+                    <p:commandButton value="Salvar" id="btSalvar" icon="fa fa-save"  update="@form" action="#{contaPagarController.salvar()}"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton value="Pesquisar" icon="fa fa-search"  process="@this" action="pesquisa?faces-redirect=true"/>
+                </f:facet>
+            </p:toolbar>
+
+            <p:panel>
+                <h:panelGrid columns="4" style="width: 600px">
+                    <p:outputLabel value="Cod" for="cod"/>
+                    <p:inputText id="cod" value="#{contaPagarController.conta.id}" disabled="true" size="15"/>
+
+                    <p:spacer/>
+                    <p:spacer/>
+
+                    <p:outputLabel for="dtLancamento" value="Data de Lançamento"/>
+                    <p:calendar id="dtLancamento" value="#{contaPagarController.conta.lancamento}" disabled="true"
+                                locale="pt" mask="true" pattern="dd/MM/yyyy" size="15"/>
+
+
+                    <p:outputLabel for="vencimento" value="Vencimento" />
+                    <p:calendar id="vencimento" value="#{contaPagarController.conta.dataVencimento}"
+                                locale="pt" mask="true" pattern="dd/MM/yyyy" 
+                                size="10" required="true" requiredMessage="Informe o vencimento"/>
+
+                    <p:outputLabel for="valor" value="Valor"/>
+                    <p:inputNumber id="valor" value="#{contaPagarController.conta.valor}" size="15"
+                                   symbol="R$ " decimalSeparator="," thousandSeparator="."
+                                   decimalPlaces="2" required="true"/>
+
+                    <p:outputLabel for="fornecedor" value="Fornecedor"/>
+                    <p:selectOneMenu id="fornecedor" value="#{contaPagarController.conta.fornecedor}" converter="#{fornecedorConverter}" required="true">
+                        <f:selectItem itemLabel="Selecione"/>
+                        <f:selectItems value="#{fornecedorController.fornecedores}" var="fornecedor" itemLabel="#{fornecedor.nome}" itemValue="#{fornecedor}"/>
+                    </p:selectOneMenu>
+
+                </h:panelGrid>
+
+                <h:panelGrid columns="1">
+                    <p:outputLabel value="Descrição" for="descricao"/>
+                    <p:inputText id="descricao" value="#{contaPagarController.conta.descricao}" converter="#{upperCaseConverter}" required="true"/>
+
+                    <p:outputLabel for="obs" value="Observações: "/>
+                    <p:inputTextarea id="obs" value="#{contaPagarController.conta.observacao}" rows="3" cols="85" converter="#{upperCaseConverter}"/>
+                </h:panelGrid>
+            </p:panel>
+
+
+        </h:form>
+    </ui:define>
+
+</ui:composition>

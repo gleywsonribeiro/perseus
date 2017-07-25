@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../../WEB-INF/template/layout.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <!--    <ui:define name="titulo">Contas a Pagar</ui:define>-->
+
+    <ui:define name="corpo">
+        <h:form>
+            <p:messages autoUpdate="true" closable="true"/>
+            <h:outputText value="Lançamento de Contas a Receber" styleClass="titulo" />
+
+            <p:toolbar style="margin-top: 20px">
+                <f:facet name="left">
+                    <p:commandButton value="Novo" icon="fa fa-file"  process="@this" update="@form" /> <!--outcome="/produtos/CadastroProduto"-->
+                    <p:commandButton value="Salvar" id="btSalvar" icon="fa fa-save"  update="@form" action="#{contaReceberController.salvar()}"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton value="Pesquisar" icon="fa fa-search"  process="@this" />
+                </f:facet>
+            </p:toolbar>
+
+            <p:panel>
+                <h:panelGrid columns="4" style="width: 600px">
+
+                    <p:outputLabel for="dtVencimento" value="Vencimento"/>
+                    <p:calendar id="dtVencimento" value="#{contaReceberController.conta.dataVencimento}"
+                                locale="pt" mask="true" pattern="dd/MM/yyyy" size="15" required="true" />
+
+                    <p:outputLabel for="valor" value="Valor"/>
+                    <p:inputNumber id="valor" value="#{contaReceberController.conta.valor}" size="15"
+                                   symbol="R$ " decimalSeparator="," thousandSeparator="."
+                                   decimalPlaces="2" required="true"/>
+
+                    <p:outputLabel for="desconto" value="Desconto"/>
+                    <p:inputNumber id="desconto" value="#{contaReceberController.conta.desconto}" size="15"
+                                   symbol="R$ " decimalSeparator="," thousandSeparator="."
+                                   decimalPlaces="2" required="true"/>
+
+                    <p:outputLabel for="juros" value="Juros"/>
+                    <p:inputNumber id="juros" value="#{contaReceberController.conta.juros}" size="15"
+                                   symbol="R$ " decimalSeparator="," thousandSeparator="."
+                                   decimalPlaces="2" required="true"/>
+                </h:panelGrid>
+
+                <h:panelGrid columns="1">
+                    <p:outputLabel for="obs" value="Observações: "/>
+                    <p:inputTextarea id="obs" value="#{contaReceberController.conta.observacao}"
+                                     required="true" rows="3" cols="85" converter="#{upperCaseConverter}"/>
+                </h:panelGrid>
+            </p:panel>
+
+
+        </h:form>
+    </ui:define>
+
+</ui:composition>

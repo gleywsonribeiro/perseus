@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/WEB-INF/template/layout.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <ui:define name="titulo">Contas Pendentes</ui:define>
+
+    <ui:define name="corpo">
+        <h:form>
+            <p:messages autoUpdate="true" closable="true"/>
+            <h:form id="formContas">
+                <p:toolbar>
+                    <p:toolbarGroup>
+                        <p:commandButton value="Pesquisar" icon="fa fa-search" action="#{pesquisaContaPagar.pesquisar()}" update="contasTable"/>
+                    </p:toolbarGroup>
+<!--                    <p:toolbarGroup align="right">
+                        <p:commandButton value="Novo" id="novo" icon="fa fa-file" process="@this" action="lancamento?faces-redirect=true"/>
+                    </p:toolbarGroup>-->
+                </p:toolbar>
+                <h:panelGrid id="painel" columns="2" style="margin-top: 5px;">
+                    <p:outputLabel value="Código" for="codigo"/>
+                    <p:inputText id="codigo" value="#{pesquisaContaPagar.filtro.id}" size="5"/>
+
+                    <p:outputLabel value="Nome do Fornecedor" for="nome"/>
+                    <p:inputText id="nome" value="#{pesquisaContaPagar.filtro.nome}" size="60"/>
+                </h:panelGrid>
+
+                <p:dataTable id="contasTable" value="#{pesquisaContaPagar.contasPendentes}" paginatorAlwaysVisible="false" paginatorPosition="bottom"
+                             rowStyleClass="#{conta.vencida? 'pendente-atraso' : 'pendente-sem-atraso'}"
+                             var="conta" style="margin-top: 20px;" emptyMessage="Não há registros." paginator="true" rows="5">
+                    <p:column headerText="Código" style="text-align: center; width: 100px">
+                        <h:outputText value="#{conta.id}"/>
+                    </p:column>
+
+                    <p:column headerText="Fornecedor">
+                        <h:outputText value="#{conta.fornecedor.nome}"/>
+                    </p:column>
+                    
+                    <p:column headerText="Valor" style="text-align: right; width: 200px">
+                        <h:outputText value="#{conta.valor}">
+                            <f:convertNumber type="currency" />
+                        </h:outputText>
+                    </p:column>
+                    
+                    <p:column headerText="Vencimento" style="text-align: center; width: 200px">
+                        <h:outputText value="#{conta.dataVencimento}">
+                            <f:convertDateTime pattern="dd/MM/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    
+                    <p:column style="width: 100px; text-align: center">
+                        <p:commandButton icon="fa fa-check" title="Confirmar pagamento" action="#{pesquisaContaPagar.pagar()}" update="contasTable">
+                            <p:confirm header="Confirmação de Pagamento" message="Confirma pagamento para a conta #{conta.id}?" icon="ui-icon-alert"/>
+                            <f:setPropertyActionListener target="#{pesquisaContaPagar.conta}" value="#{conta}"/>
+                        </p:commandButton>
+                        <p:commandButton icon="fa fa-money" title="Lançar Pagamento" action="pagamento?faces-redirect=true">
+                            <f:setPropertyActionListener target="#{contaPagarController.conta}" value="#{conta}"/>
+                        </p:commandButton>                
+                    </p:column>
+                </p:dataTable>
+
+                <p:confirmDialog global="true">  
+                    <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                    <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+                </p:confirmDialog>
+            </h:form>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

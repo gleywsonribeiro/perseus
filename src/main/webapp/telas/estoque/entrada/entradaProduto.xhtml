@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../../WEB-INF/template/layout.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <ui:define name="titulo">Entrada de Produto</ui:define>
+
+    <ui:define name="corpo">
+        <h:form id="formEntrada">
+            <p:messages autoUpdate="true" closable="true"/>
+            
+            <h:outputText value="Entrada de Produto" styleClass="titulo"/>
+            
+            <p:toolbar style="margin-top: 20px">
+                <p:toolbarGroup>
+                    <p:commandButton value="Nova Entrada" icon="fa fa-file" process="@this" update="@form" action="#{entradaController.novo()}"/> 
+                    <p:commandButton value="Salvar" id="botaoSalvar" process="@this painel" icon="fa fa-save"
+                                     update="painel :formEntrada:tabview:itens :formEntrada:tabview:item" action="#{entradaController.salvar()}" 
+                                     disabled="#{entradaController.entrada.naoEditavel}"/>
+                </p:toolbarGroup>
+                <p:toolbarGroup align="right">
+                    <!--<p:commandButton id="emitir" value="Emitir" process="@this" update="@form"/>-->
+                    <p:commandButton id="cancelar" value="Cancelar" icon="fa fa-remove"/>
+                    <!--<p:commandButton id="enviar" value="Enviar por e-mail" />-->
+
+                    <p:separator/>
+
+                    <p:commandButton value="Pesquisar" icon="fa fa-search" process="@this" action="pesquisaEntrada?faces-redirect=true"/>
+                </p:toolbarGroup>
+            </p:toolbar>
+            
+            <p:defaultCommand target="botaoSalvar"/>
+
+            <p:panel>
+                
+                <ui:include src="/WEB-INF/include/entrada/capa.xhtml" />
+
+                <p:tabView style="margin-top: 20px" id="tabview">
+                    <p:tab title="Produtos">
+                        <ui:include src="/WEB-INF/include/entrada/itens.xhtml"/>
+                        <!--                    <ui:include src="../WEB-INF/template/pedido/itensPedido.xhtml" />-->
+                    </p:tab>
+                    <p:tab title="Observação">
+                        <p:inputTextarea rows="5" value="" style="width: 100%" converter="#{upperCaseConverter}"/>
+                    </p:tab>
+                </p:tabView>
+            </p:panel>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

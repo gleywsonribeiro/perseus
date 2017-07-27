@@ -6,6 +6,7 @@
 package br.com.icone.perseus.repositorio;
 
 import br.com.icone.perseus.modelo.Cliente;
+import java.io.Serializable;
 import java.util.List;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -15,7 +16,7 @@ import javax.persistence.NoResultException;
  *
  * @author Gleywson
  */
-public class Clientes implements Repositorio<Cliente, Long> {
+public class Clientes implements Repositorio<Cliente, Long>, Serializable {
 
     @Inject
     private EntityManager manager;

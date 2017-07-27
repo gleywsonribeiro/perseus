@@ -22,12 +22,12 @@
                 </p:toolbar>
                 <h:panelGrid id="painel" columns="2" style="margin-top: 5px;">
                     <p:outputLabel value="Código" for="codigo"/>
-                    <p:inputText id="codigo" size="5" value="#{clienteController.filtro.id}">
+                    <p:inputText id="codigo" size="5">
                         <f:convertNumber/>
                     </p:inputText>
 
                     <p:outputLabel value="Nome Cliente" for="nome"/>
-                    <p:inputText id="nome" size="60" value="#{clienteController.filtro.nome}"/>
+                    <p:inputText id="nome" size="60"/>
                 </h:panelGrid>
 
                 <p:dataTable id="clienteTable" value="#{clienteController.clientesFiltrados}" paginatorAlwaysVisible="false" paginatorPosition="bottom"

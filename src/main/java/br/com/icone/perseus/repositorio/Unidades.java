@@ -42,7 +42,8 @@ public class Unidades implements Repositorio<Unidade, Long>, Serializable {
 
     @Override
     public List<Unidade> listarTodos(Class<Unidade> classe) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return manager.createQuery("SELECT u FROM Unidade u", classe).getResultList();
+//        createQuery("SELECT conta FROM Pagamento conta WHERE conta.pedido IS NOT NULL and conta.dataPagamento IS NULL", Pagamento.class).getResultList();
     }
     
 }

@@ -6,6 +6,7 @@
 package br.com.icone.perseus.repositorio;
 
 import br.com.icone.perseus.modelo.Unidade;
+import br.com.icone.perseus.util.jsf.JsfUtil;
 import java.io.Serializable;
 import java.util.List;
 import javax.inject.Inject;
@@ -27,5 +28,11 @@ public class Repositorio implements Serializable {
     
     public List<Unidade> listar() {
         return manager.createQuery("SELECT u FROM Unidade AS u", Unidade.class).getResultList();
+    }
+    
+    public void remove(Unidade unidade) {
+        manager.getTransaction().begin();
+        manager.remove(manager.merge(unidade));
+        manager.getTransaction().commit();
     }
 }

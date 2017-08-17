@@ -7,7 +7,8 @@ package br.com.icone.perseus.modelo.controller;
 
 
 import br.com.icone.perseus.modelo.Unidade;
-import br.com.icone.perseus.repositorio.Unidades;
+import br.com.icone.perseus.repositorio.Repositorio;
+//import br.com.icone.perseus.repositorio.Unidades;
 import br.com.icone.perseus.util.jsf.JsfUtil;
 import java.io.Serializable;
 import java.util.List;
@@ -27,25 +28,21 @@ public class Unidadecontroller implements Serializable {
     private List<Unidade> unidades;
     
     @Inject
-    private Unidades repositorio;
+    private Repositorio repositorio;
     
     public Unidadecontroller() {
         unidade = new Unidade();
     }
     
     public void salvar() {
-        if(unidade.getId() == null) {
-            repositorio.salvar(unidade);
-        } else {
-            repositorio.editar(unidade);
-        }
+        repositorio.save(unidade);
         unidade = new Unidade();
         unidades = null;
         JsfUtil.addMessage("Unidade salva com sucesso!");
     }
     
     public void remover() {
-        repositorio.remover(unidade);
+        repositorio.remove(unidade);
         unidade = new Unidade();
         unidades = null;
         JsfUtil.addMessage("Removido com sucesso!");
@@ -61,7 +58,7 @@ public class Unidadecontroller implements Serializable {
 
     public List<Unidade> getUnidades() {
         if(unidades == null) {
-            unidades = repositorio.listarTodos(Unidade.class);
+            unidades = repositorio.listar();
         } 
         return unidades;
     }

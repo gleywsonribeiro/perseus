@@ -5,18 +5,27 @@
  */
 package br.com.icone.perseus.repositorio;
 
+import br.com.icone.perseus.modelo.Unidade;
 import java.io.Serializable;
 import java.util.List;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
 
-public interface Repositorio<T, I extends Serializable> {
-
-    public void salvar(T entidade);
+/**
+ *
+ * @author Gleywson
+ */
+public class Repositorio implements Serializable {
+    @Inject
+    private EntityManager manager;
     
-    public void editar(T entidade);
-
-    public void remover(T entidade);
-
-    public T porId(Class<T> classe, I pk);
-
-    public List<T> listarTodos(Class<T> classe);
+    public void save(Unidade unidade) {
+        manager.getTransaction().begin();
+        manager.merge(unidade);
+        manager.getTransaction().commit();
+    }
+    
+    public List<Unidade> listar() {
+        return manager.createQuery("SELECT u FROM Unidade AS u", Unidade.class).getResultList();
+    }
 }

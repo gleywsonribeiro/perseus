@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.com.icone.perseus.modelo.controller;
+package br.com.icone.perseus.controller;
 
 
 import br.com.icone.perseus.modelo.Unidade;

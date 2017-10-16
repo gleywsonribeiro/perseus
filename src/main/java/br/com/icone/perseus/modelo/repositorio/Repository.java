@@ -7,21 +7,33 @@ package br.com.icone.perseus.modelo.repositorio;
 
 import java.io.Serializable;
 import java.util.List;
+import javax.persistence.EntityManager;
 
 /**
  *
  * @author Gleywson
  */
-public class Repository<T> implements IRepository<T>, Serializable {
+public abstract class Repository<T> implements IRepository<T>{
 
+    private Class<T> entityClass;
+
+    public Repository(Class<T> entityClass) {
+        this.entityClass = entityClass;
+    }
+    
+    protected abstract EntityManager getEntityManager();
+    
+    
     @Override
     public T porId(Long id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public T guardar(T entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void guardar(T entity) {
+        getEntityManager().getTransaction().begin();
+        getEntityManager().persist(entity);
+        getEntityManager().getTransaction().commit();
     }
 
     @Override
@@ -35,7 +47,7 @@ public class Repository<T> implements IRepository<T>, Serializable {
     }
 
     @Override
-    public List<T> todos() {
+    public List<T> listarTudo() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     

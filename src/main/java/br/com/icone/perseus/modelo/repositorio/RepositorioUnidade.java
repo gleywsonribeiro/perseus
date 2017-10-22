@@ -5,6 +5,7 @@
  */
 package br.com.icone.perseus.modelo.repositorio;
 
+import br.com.icone.perseus.modelo.Unidade;
 import java.io.Serializable;
 import java.util.List;
 import javax.inject.Inject;
@@ -14,46 +15,45 @@ import javax.persistence.EntityManager;
  *
  * @author Gleywson
  */
-public class Repository<T> implements IRepository<T>{
-
+public class RepositorioUnidade implements IRepository<Unidade>, Serializable {
+    
     @Inject
-    private EntityManager manager;
-    private Class<T> entityClass;
-
-    public Repository(Class<T> entityClass) {
-        this.entityClass = entityClass;
-    }
-    
-    protected EntityManager getEntityManager() {
-        return manager;
-    }
-    
+    private EntityManager entityManager;
     
     @Override
-    public T porId(Long id) {
+    public Unidade porId(Long id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void guardar(T entity) {
-        getEntityManager().getTransaction().begin();
-        getEntityManager().persist(entity);
-        getEntityManager().getTransaction().commit();
+    public void guardar(Unidade entity) {
+        try {
+            getEntityManager().getTransaction().begin();
+            getEntityManager().persist(entity);
+            getEntityManager().getTransaction().commit();
+        } catch (Exception e) {
+            getEntityManager().getTransaction().rollback();
+        }
     }
 
     @Override
-    public void alterar(T entity) {
+    public void alterar(Unidade entity) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void remover(T entity) {
+    public void remover(Unidade entity) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public List<T> listarTudo() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<Unidade> listarTudo() {
+        return getEntityManager().createQuery("SELECT u FROM Unidade AS u", Unidade.class).getResultList();
     }
+
+    public EntityManager getEntityManager() {
+        return entityManager;
+    }
+
     
 }
